@@ -1,15 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-
-const dbPath = path.resolve(__dirname, '../../database/database.sqlite');
-const db = new sqlite3.Database(dbPath, (error) => {
-    if (error) {
-        console.log('Hubo un error en la conexión a SQLite:', error.message);
-    } else {
-        console.log('Conectado a SQLite');
-        db.run("PRAGMA foreign_keys = ON"); // Habilito las claves foráneas
-    }
-});
+const db = require('../config/config.conexion.js');
 
 db.serialize(() => {
     // Tabla - Ciudad
@@ -77,6 +66,9 @@ db.serialize(() => {
             FOREIGN KEY (id_publicacion) REFERENCES Publicacion(id)
         )
     `);
+
+    
+
 });
 
 module.exports = db;
