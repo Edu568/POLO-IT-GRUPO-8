@@ -1,4 +1,4 @@
-const db = require('../config/config.conexion');
+const db = require('../config/conexion.config');
 
 function getAllPublicaciones(callback) {
   const sql = `
@@ -19,3 +19,5 @@ function getAllPublicaciones(callback) {
   `;
   db.all(sql, [], callback);
 }
+//Este module se exportara "Service" para ser consumido
+module.exports = {getAllPublicaciones}
