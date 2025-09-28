@@ -1,4 +1,4 @@
-const db = require('../config/config.conexion.js');
+const db = require('../config/conexion.config');
 
 db.serialize(() => {
     // Tabla - Ciudad
