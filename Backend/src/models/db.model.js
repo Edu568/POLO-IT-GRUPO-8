@@ -67,6 +67,21 @@ db.serialize(() => {
         )
     `);
 
+    //Tabla - Transaccion
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Transaccion (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_publicacion_ofrecida INTEGER NOT NULL,
+            id_publicacion_deseada INTEGER NOT NULL,
+            id_usuario_ofertante INTEGER NOT NULL,
+            estado TEXT CHECK(estado IN('Pendiente','Aceptado','Rechazado','Cancelado'))DEFAULT 'Pendiente',
+            fecha_transaccion DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_publicacion_ofrecida) REFERENCES Publicacion(id),
+            FOREIGN KEY (id_publicacion_deseada) REFERENCES Publicacion(id),
+            FOREIGN KEY (id_usuario_ofertante) REFERENCES Usuario(id)
+        )
+        `);
+
     
 
 });
