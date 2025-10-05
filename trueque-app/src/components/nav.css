@@ -1,0 +1,19 @@
+.navCompleto {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .navPequeño {
+        display: none;
+    }
+    .navCompleto {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+
+@media (min-width: 1024px) {
+    
+}
