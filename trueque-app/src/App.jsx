@@ -1,16 +1,21 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbarra } from './components/Navbarra';
-import { Footer } from './components/Footer';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
+import { NotFound } from './pages/NotFound';
+import { DetalleProducto } from './pages/detalleProducto';
+
 
 function App() {
 
   return (
-    <>
-      <Navbarra />
-      <HomePage />
-      <Footer />
-    </>
+    <Router>
+      <Routes>
+        <Route path='/' element={<HomePage/>}/>
+        <Route path='/detalle' element={<DetalleProducto/>}/>
+
+        <Route path='*' element={<NotFound/>}/>
+      </Routes>
+    </Router>
   )
 }
 

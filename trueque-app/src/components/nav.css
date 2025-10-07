@@ -2,6 +2,16 @@
     display: none;
 }
 
+.links {
+    text-decoration: none;
+    color: #9a9c9e
+}
+
+.links:hover {
+    color: #ffffff;
+    transition: color 0.1s;
+}
+
 @media (min-width: 768px) {
     .navPequeño {
         display: none;

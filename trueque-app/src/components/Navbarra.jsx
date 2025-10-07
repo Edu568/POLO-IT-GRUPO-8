@@ -1,9 +1,10 @@
 import { Container, Nav, Navbar, Form, Button } from "react-bootstrap";
+import { Link } from 'react-router-dom'
 import "./nav.css";
 
 export const Navbarra = () => {
   return (
-    <>
+    <header>
       <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="navPequeño">
         <Container className="d-flex fle-row justify-content-between m-2 p-1 containerNavPequeño">
           <Navbar.Brand href="#home">Trueque App</Navbar.Brand>
@@ -12,7 +13,7 @@ export const Navbarra = () => {
         <Navbar.Collapse>
           <Container>
             <Nav className="d-flex flex-row justify-content-around mt-3">
-              <Nav.Link href="#home">Home</Nav.Link>
+              <Nav.Link><Link className="links" to='/'>Inicio</Link></Nav.Link>
               <Nav.Link href="#features">Productos</Nav.Link>
               <Nav.Link href="#pricing">Cuenta</Nav.Link>
             </Nav>
@@ -37,9 +38,9 @@ export const Navbarra = () => {
       </Navbar>
       <Navbar bg="dark" data-bs-theme="dark" className="navCompleto">
         <Container>
-          <Navbar.Brand href="#home">Trueque App</Navbar.Brand>
+          <Navbar.Brand>Trueque App</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link><Link className="links" to='/'>Inicio</Link></Nav.Link>
             <Nav.Link href="#features">Productos</Nav.Link>
             <Nav.Link href="#pricing">Cuenta</Nav.Link>
           </Nav>
@@ -64,6 +65,6 @@ export const Navbarra = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-    </>
+    </header>
   );
 };
