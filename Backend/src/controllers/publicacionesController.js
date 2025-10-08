@@ -1,21 +1,38 @@
 const publicacionesModel = require('../models/publicaciones.model');
+const { listarPublicaciones, obtenerPublicacionById } = require('../service/publicaciones.service');
+const { eliminarPublicacion } = require('../service/publicaciones.service');
 
 
-function getPublicaciones(req, res) {
-  publicacionesModel.getAllPublicaciones((err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+async function deletePublicacion(req, res) {
+  try {
+    const { id } = req.params;
+    const result = await eliminarPublicacion(id);
+    if (result.changes === 0) return res.status(404).json({ error: "Publicación no encontrada" });
+    res.json({ message: "Publicación eliminada", transaccionesCanceladas: result.transaccionesCanceladas || 0 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function getPublicaciones(req, res) {
+  try {
+    const publicaciones = await listarPublicaciones();
+    res.json(publicaciones); 
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
 
 
-function getPublicacion(req, res) {
-  const { id } = req.params;
-  publicacionesModel.getPublicacionById(id, (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(404).json({ error: "Publicación no encontrada" });
-    res.json(row);
-  });
+async function getPublicacion(req, res) { 
+  try {
+    const { id } = req.params;
+    const publicacion = await obtenerPublicacionById(id);
+    if (!publicacion) return res.status(404).json({ error: "Publicación no encontrada" });
+    res.json(publicacion);  
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
 
 function createPublicacion(req, res) {
@@ -36,14 +53,6 @@ function updatePublicacion(req, res) {
 }
 
 
-function deletePublicacion(req, res) {
-  const { id } = req.params;
-  publicacionesModel.deletePublicacion(id, (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (result.changes === 0) return res.status(404).json({ error: "Publicación no encontrada" });
-    res.json({ message: "Publicación eliminada" });
-  });
-}
 
 
 

@@ -1,12 +1,13 @@
 const db = require('../config/conexion.config');
+//De momento dejo alguno campos acepten null, hasta que tengamos al 100% la base de datos
 
 db.serialize(() => {
     // Tabla - Ciudad
     db.run(`
         CREATE TABLE IF NOT EXISTS Ciudad (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre VARCHAR(50) NOT NULL,
-            provincia VARCHAR(70) NOT NULL
+            nombre VARCHAR(50) NULL,
+            provincia VARCHAR(70) NULL
         )
     `);
 
@@ -14,8 +15,8 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS Barrio (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre VARCHAR(50) NOT NULL,
-            id_ciudad INTEGER NOT NULL,
+            nombre VARCHAR(50) NULL,
+            id_ciudad INTEGER NULL,
             FOREIGN KEY (id_ciudad) REFERENCES Ciudad(id)
         )
     `);
@@ -27,7 +28,7 @@ db.serialize(() => {
             nombre VARCHAR(30) NOT NULL,
             email VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
-            id_barrio INTEGER NOT NULL,
+            id_barrio INTEGER NULL,
             fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (id_barrio) REFERENCES Barrio(id)
         )

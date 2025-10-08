@@ -18,17 +18,19 @@ async function listar(req, res){
     }
 }
 
-async function actualizarEstado(req,res){
-    try {
-        const {id} = req.params;
-        const {estado} = req.body;
-        if(!estado) return res.status(400).json({error: 'Falta estado'});
+async function actualizarEstado(req, res) {
+  try {
+    const { id } = req.params;
+    const { estado } = req.body;
+    if (!estado) return res.status(400).json({ error: 'Falta estado' });
 
-        const result = await cambiarEstado(id, estado);
-        res.json({message:'Estado Actualizado',result});
-    } catch (err) {
-        res.status(400).json({error: err.message});
-    }
+    const result = await cambiarEstado(id, estado);
+    if (result.update === 0) return res.status(404).json({ error: 'Transacción no encontrada' });
+    res.json({ message: 'Estado Actualizado', result });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 }
+
 
 module.exports = {proponer, listar, actualizarEstado};

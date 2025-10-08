@@ -3,21 +3,25 @@ const db = require('../config/conexion.config');
 function getAllPublicaciones(callback) {
   const sql = `
     SELECT 
+      p.id,
       p.titulo,
       p.descripcion,
       p.estado,
       p.disponible,
       p.fecha_publicacion,
       u.nombre AS usuario,
-      c.nombre AS categoria,
-      f.url AS foto
+      c.nombre AS categoria
     FROM Publicacion p
     JOIN Usuario u ON p.id_dueno = u.id
     JOIN Categoria c ON p.id_categoria = c.id
-    LEFT JOIN Foto f ON f.id_publicacion = p.id
     ORDER BY p.fecha_publicacion DESC
   `;
   db.all(sql, [], callback);
+}
+
+function getAllFotosPublicacionById(id, callback){
+  const sql =`SELECT url FROM Foto WHERE id_publicacion = ? ORDER BY id`;
+  db.all(sql,[id], callback);
 }
 
 
@@ -31,12 +35,10 @@ function getPublicacionById(id, callback) {
       p.disponible,
       p.fecha_publicacion,
       u.nombre AS usuario,
-      c.nombre AS categoria,
-      f.url AS foto
+      c.nombre AS categoria
     FROM Publicacion p
     JOIN Usuario u ON p.id_dueno = u.id
     JOIN Categoria c ON p.id_categoria = c.id
-    LEFT JOIN Foto f ON f.id_publicacion = p.id
     WHERE p.id = ?
   `;
   db.get(sql, [id], callback);
@@ -82,5 +84,6 @@ module.exports = {
   getPublicacionById,
   createPublicacion,
   updatePublicacion,
-  deletePublicacion
+  deletePublicacion,
+  getAllFotosPublicacionById
 };
