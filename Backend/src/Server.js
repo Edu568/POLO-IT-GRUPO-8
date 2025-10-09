@@ -10,6 +10,8 @@ require('./models/db.model');
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 app.use("/api/publicaciones", publicacionesRouter);
 app.use('/api/transacciones', transaccionRouter);
 app.use('/api/foto', fotoRouter);

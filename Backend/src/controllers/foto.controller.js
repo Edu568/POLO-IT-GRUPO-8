@@ -56,11 +56,69 @@ async function deleteFoto(req, res){
     }
 }
 
+async function uploadFoto(req, res) {
+  try {
+    // Verifica si hay archivos
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'Al menos un archivo requerido' });
+    }
+    //verifica que se maximo 4 archivos
+    if (req.files.length > 4) {
+      return res.status(400).json({ error: 'Máximo 4 archivos permitidos' });
+    }
+
+    const { id_publicacion } = req.body;
+    if (!id_publicacion) {
+      return res.status(400).json({ error: 'id_publicacion requerido' });
+    }
+
+    const idPub = parseInt(id_publicacion);
+    const fotosSubidas = [];
+
+    // Procesa cada archivo en paralelo
+    const promesas = req.files.map(async (file) => {
+      const url = `/uploads/${file.filename}`;
+      const foto = await crearFoto({ id_publicacion: idPub, url });
+
+      return {
+        id: foto.id,
+        url: url,
+        filename: file.filename,
+        originalname: file.originalname,
+        size: file.size,
+        mimetype: file.mimetype
+      };
+    });
+
+    const resultados = await Promise.all(promesas);
+    fotosSubidas.push(...resultados);
+
+    res.status(201).json({
+      message: `${fotosSubidas.length} foto(s) subidas exitosamente`,
+      fotos: fotosSubidas,
+      publicacion_id: idPub
+    });
+  } catch (err) {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: 'Un archivo es demasiado grande (máx 5MB)' });
+      }
+      if (err.code === 'LIMIT_FILE_COUNT') {
+        return res.status(400).json({ error: 'Demasiados archivos (máx 4)' });
+      }
+      return res.status(400).json({ error: 'Error en upload: ' + err.message });
+    }
+    res.status(400).json({ error: err.message });
+  }
+}
+
+
 //controller --> router
 module.exports = {
     getFotos,
     getFoto,
     createFoto,
     updateFoto,
-    deleteFoto
+    deleteFoto,
+    uploadFoto
 };
