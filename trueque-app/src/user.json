@@ -1,0 +1,62 @@
+[
+  {
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@email.com",
+    "password": "pass123",
+    "id_barrio": 1
+  },
+  {
+    "nombre": "María Gómez",
+    "email": "maria.gomez@email.com",
+    "password": "miClave456",
+    "id_barrio": 2
+  },
+  {
+    "nombre": "Carlos López",
+    "email": "carlos.lopez@email.com",
+    "password": "secreto789",
+    "id_barrio": 1
+  },
+  {
+    "nombre": "Ana Martínez",
+    "email": "ana.martinez@email.com",
+    "password": "ana2023",
+    "id_barrio": 3
+  },
+  {
+    "nombre": "Diego Rodríguez",
+    "email": "diego.rodriguez@email.com",
+    "password": "diegoPass",
+    "id_barrio": 2
+  },
+  {
+    "nombre": "Laura Fernández",
+    "email": "laura.fernandez@email.com",
+    "password": "laura456",
+    "id_barrio": 1
+  },
+  {
+    "nombre": "Miguel Silva",
+    "email": "miguel.silva@email.com",
+    "password": "miguel789",
+    "id_barrio": 3
+  },
+  {
+    "nombre": "Sofía Torres",
+    "email": "sofia.torres@email.com",
+    "password": "sofia123",
+    "id_barrio": 2
+  },
+  {
+    "nombre": "Roberto García",
+    "email": "roberto.garcia@email.com",
+    "password": "robertoPass",
+    "id_barrio": 1
+  },
+  {
+    "nombre": "Valentina Ruiz",
+    "email": "valentina.ruiz@email.com",
+    "password": "valen456",
+    "id_barrio": 3
+  }
+]
