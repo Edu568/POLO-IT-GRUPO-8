@@ -32,7 +32,7 @@ async function crearBarrio(data){
     if(!nombre || !id_ciudad) return Promise.reject(new Error('id_ciudad y nombre requerido'));
 
     //valido que ciudad existe
-    const ciudad = await listarBarrioById(id_ciudad);
+    const ciudad = await listarCiudadById(id_ciudad);
     if(!ciudad) return Promise.reject(new Error('Ciudad no existe'));
 
     return new Promise((resolve, reject) =>{
