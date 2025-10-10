@@ -6,8 +6,7 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS Ciudad (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre VARCHAR(50) NULL,
-            provincia VARCHAR(70) NULL
+            nombre VARCHAR(50) NULL
         )
     `);
 
@@ -83,7 +82,6 @@ db.serialize(() => {
         )
         `);
 
-    
 
 });
 

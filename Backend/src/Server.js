@@ -5,6 +5,8 @@ const PORT = 3000;
 const publicacionesRouter = require('./routes/publicacionesRouter');
 const transaccionRouter = require('./routes/transaccion.route');
 const fotoRouter = require('./routes/foto.router');
+const ciudadRouter = require('./routes/ciudad.router');
+const barrioRouter = require('./routes/barrio.router');
 
 require('./models/db.model');
 
@@ -15,6 +17,8 @@ app.use('/uploads', express.static('uploads'));
 app.use("/api/publicaciones", publicacionesRouter);
 app.use('/api/transacciones', transaccionRouter);
 app.use('/api/foto', fotoRouter);
+app.use('/api/ciudad',ciudadRouter);
+app.use('/api/barrio',barrioRouter);
 
 
 app.listen(PORT, () => {
