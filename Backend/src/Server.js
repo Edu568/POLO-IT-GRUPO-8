@@ -8,6 +8,7 @@ const fotoRouter = require('./routes/foto.router');
 const ciudadRouter = require('./routes/ciudad.router');
 const barrioRouter = require('./routes/barrio.router');
 const usuarioRouter = require('./routes/usuario.router');
+const categoriaRouter = require('./routes/categoria.router');
 
 require('./models/db.model');
 
@@ -21,6 +22,7 @@ app.use('/api/foto', fotoRouter);
 app.use('/api/ciudad',ciudadRouter);
 app.use('/api/barrio',barrioRouter);
 app.use('api/usuario',usuarioRouter);
+app.use('api/categoria',categoriaRouter);
 
 
 app.listen(PORT, () => {
