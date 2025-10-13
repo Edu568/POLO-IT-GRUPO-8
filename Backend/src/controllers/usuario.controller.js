@@ -63,7 +63,7 @@ async function loginUsuario(req,res){
 module.exports = {
     getUsuario,
     getUsuarioById,
-    crearUsuario,
+    createUsuario,
     updateUsuario,
     loginUsuario
 }

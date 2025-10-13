@@ -22,12 +22,12 @@ function getUsuarioById(id, callback){
 }
 
 function createUsuario(data, callback){
-    const {nombre,email,password,id_barrio} = data;
+    const {nombre,apellido,email,password,id_barrio} = data;
     
     bcrypt.hash(password,10,(err,hash) =>{
         if(err) return callback(err);
-        const sql = `INSET INTO Usuario(nombre, email,password, id_barrio) VALUES (?,?,?,?)`;
-        db.run(sql,[nombre,email,password,id_barrio], function(error){
+        const sql = `INSERT INTO Usuario(nombre, apellido,email,password, id_barrio) VALUES (?,?,?,?,?)`;
+        db.run(sql,[nombre,apellido,email,password,id_barrio], function(error){
             if(error) return callback(error);
             callback(null, {id: this.lastID, ...data, password:undefined});
         });

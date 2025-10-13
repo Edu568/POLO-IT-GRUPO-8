@@ -25,6 +25,7 @@ db.serialize(() => {
         CREATE TABLE IF NOT EXISTS Usuario (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre VARCHAR(30) NOT NULL,
+            apellido VARCHAR(50) NULL,
             email VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
             id_barrio INTEGER NULL,

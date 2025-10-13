@@ -31,9 +31,9 @@ function listarUsuarioById(id){
 }
 
 async function crearUsuario(data){
-    const {nombre,email,password, id_barrio} = data;
+    const {nombre,apellido,email,password, id_barrio} = data;
     //Valido los campos
-    if(!nombre || !email || !password || !id_barrio){
+    if(!nombre || !apellido || !email || !password || !id_barrio){
         return Promise.reject(new Error('Campos requeridos'));
     }
 
@@ -44,7 +44,7 @@ async function crearUsuario(data){
     //Valido el email sea unico
     const emailExiste = await new Promise((resolve, reject) =>{
         checkEmailExiste(email, (error, result) =>{
-            if(error) reject(error);
+            if(error) reject(new Error('Email ya registrado'));
             else resolve(result);
         })
     });
@@ -60,7 +60,7 @@ async function crearUsuario(data){
 }
 
 async function actualizarUsuario(id,data){
-    const {nombre, email, id_barrio} = data;
+    const {nombre, apellido,email, id_barrio} = data;
     //valido si se ingreso un nuevo barrio
     if(id_barrio){
         //valido si el barrio existe

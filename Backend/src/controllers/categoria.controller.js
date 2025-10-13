@@ -8,7 +8,7 @@ const {
 
 async function getAllCategoria(req,res){
     try {
-        const categorias = await getAllCategoria();
+        const categorias = await listarCategorias();
         res.json(categorias);
     } catch (error) {
         res.status(500).json({error: error.message});
@@ -18,7 +18,7 @@ async function getAllCategoria(req,res){
 async function getCategoriaById(req,res){
     try {
         const {id} = req.params;
-        const categoria = await getCategoriaById(id);
+        const categoria = await listarCategoriaById(id);
         if(!categoria)return res.status(404).json({error: 'Categoria no encontrada'});
         res.json(categoria);
     } catch (error) {

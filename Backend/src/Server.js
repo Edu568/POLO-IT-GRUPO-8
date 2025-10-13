@@ -21,8 +21,8 @@ app.use('/api/transacciones', transaccionRouter);
 app.use('/api/foto', fotoRouter);
 app.use('/api/ciudad',ciudadRouter);
 app.use('/api/barrio',barrioRouter);
-app.use('api/usuario',usuarioRouter);
-app.use('api/categoria',categoriaRouter);
+app.use('/api/usuario',usuarioRouter);
+app.use('/api/categoria',categoriaRouter);
 
 
 app.listen(PORT, () => {
