@@ -1,57 +1,66 @@
 import React from 'react'  
 import { useState } from 'react'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
-const LoginPage = () => {
+import { useNavigate } from 'react-router-dom';
+import { userData } from '../userData';
+
+
+
+const LoginPage = ({setIsLoggedIn}) => {
 
   const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!email || !password) {
-        setError('Por favor, completa todos los campos.');
-        return;
-    }
-
-    // Criterio 2: Validación de credenciales
-    if (email === 'test@example.com' && password === 'password123') {
         setError('');
         
-        // Criterio 3: Mantener la sesión activa
-        sessionStorage.setItem('isLoggedIn', 'true');
         
-        // Criterio 4: Redirección
-        window.location.href = '/home'; // Redirige a la página de inicio
-    } else {
-        // Criterio 5: Mensaje de error
-        setError('Correo o contraseña incorrectos.');
+        const user = userData.find(user => user.email === email && user.password === password);
+
+        if (user) {
+          setIsLoggedIn(true);
+          navigate('/');
+        } else {
+          // Usuario no encontrado, mostrar mensaje de error
+          setError('Correo o contraseña incorrectos.');
+        }
+
+        
     }
-    };
+
+    
+    
 return (
     <div className="login-container d-flex justify-content-center align-items-center vh-100">
         <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
             <h2 className="card-title text-center mb-4">Iniciar Sesión</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="emailInput" className="form-label">Correo electrónico</label>
+                    <label htmlFor="emailInput" className="form-label"></label>
                     <input 
                         type="email" 
                         className="form-control" 
                         id="" 
                         value={email} 
                         onChange={(e) => setEmail(e.target.value)}
+                        placeholder='Email'
+                        required
                         
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="passwordInput" className="form-label">Contraseña</label>
+                    <label htmlFor="passwordInput" className="form-label"></label>
                     <input 
                         type="password" 
                         className="form-control" 
                         id="passwordInput" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)}
+                        placeholder='Contraseña'
+                        required    
                         
                     />
                 </div>
