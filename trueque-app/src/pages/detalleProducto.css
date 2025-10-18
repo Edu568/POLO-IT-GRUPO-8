@@ -1,0 +1,13 @@
+.relacionadosDesktop {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .relacionadosMobile {
+        display: none;
+    }
+
+    .relacionadosDesktop {
+        display: block;
+    }
+}
