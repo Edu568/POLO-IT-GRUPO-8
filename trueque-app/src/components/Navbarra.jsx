@@ -37,7 +37,6 @@ export const Navbarra = ({ onSearch = () => {} }) => {
             <Nav.Link as={Link} to="/">
               Inicio
             </Nav.Link>
-            <Nav.Link href="#features">Productos</Nav.Link>
             <Nav.Link as={Link} to="/login">
               Cuenta
             </Nav.Link>

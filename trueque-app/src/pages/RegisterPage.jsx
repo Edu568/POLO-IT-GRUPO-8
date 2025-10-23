@@ -9,6 +9,8 @@ const RegisterPage = () => {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [barrio, setBarrio] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -16,7 +18,7 @@ const RegisterPage = () => {
     e.preventDefault();
     setError("");
     try{
-      await registerUser({ nombre, email, password });
+      await registerUser({ nombre, apellido, email, password, barrio });
       navigate("/login");
 
     } catch (err) {
@@ -30,6 +32,8 @@ const RegisterPage = () => {
         <h3 className="mb-3">Registrarse</h3>
         <form onSubmit={handleSubmit}>
           <input className="form-control mb-2" placeholder="Nombre" value={nombre} onChange={(e)=>setNombre(e.target.value)} required />
+          <input className="form-control mb-2" placeholder="Apellido" value={nombre} onChange={(e)=>setApellido(e.target.value)} required />
+          <input className="form-control mb-3" type="password" placeholder="Barrio" value={password} onChange={(e)=>setBarrio(e.target.value)} required />
           <input className="form-control mb-2" type="email" placeholder="Email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
           <input className="form-control mb-3" type="password" placeholder="Contraseña" value={password} onChange={(e)=>setPassword(e.target.value)} required />
           {error && <div className="alert alert-danger">{error}</div>}
