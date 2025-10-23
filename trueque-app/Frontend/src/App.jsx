@@ -20,7 +20,7 @@ function App() {
         } />
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/detalle" element={<DetalleProducto />} />
+        <Route path="/detalle/:id" element={<DetalleProducto />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

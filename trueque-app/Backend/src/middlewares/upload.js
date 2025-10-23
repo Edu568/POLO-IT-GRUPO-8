@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 //crear la carpera uploads si no existe
-const uploadDir = './upload.js';
+const uploadDir = './uploads';
 if(!fs.existsSync(uploadDir)){
     fs.mkdirSync(uploadDir,{recursive: true});
 }
