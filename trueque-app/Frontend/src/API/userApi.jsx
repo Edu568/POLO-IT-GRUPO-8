@@ -35,3 +35,21 @@ export async function getUsers() {
   if (!res.ok) throw new Error("Error al obtener usuarios");
   return res.json();
 }
+export async function getUserById(id) {
+  const res = await fetch(`http://localhost:3000/api/usuario/${id}`);
+  if (!res.ok) throw new Error("Error al obtener usuario");
+  return res.json();
+}
+
+export async function updateUser(id, data) {
+  const res = await fetch(`http://localhost:3000/api/usuario/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Error al actualizar usuario");
+  }
+  return res.json();
+}

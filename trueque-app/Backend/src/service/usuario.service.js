@@ -66,7 +66,7 @@ async function actualizarUsuario(id,data){
     //valido si se ingreso un nuevo barrio
     if(id_barrio){
         //valido si el barrio existe
-        const barrio  = await listarUsuarioById(id_barrio);
+        const barrio  = await listarBarrioById(id_barrio);
         if(!barrio) return new Promise.reject(new Error('Barrio no existe'));
     }
 

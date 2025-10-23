@@ -35,12 +35,12 @@ function createUsuario(data, callback){
 }
 
 function updateUsuario(id, data, callback){
-    const {nombre,email, id_barrio} = data;
+    const {nombre,apellido,email, id_barrio} = data;
     const sql = `
-        UPDATE Usuario SET (nombre = ?, email = ?, id_barrio = ?)
+        UPDATE Usuario SET nombre = ?, apelldio = ?,email = ?, id_barrio = ?
         WHERE (id = ?)
     `;
-    db.run(sql,[nombre,email,id_barrio,id],function(error){
+    db.run(sql,[nombre,apellido,email,id_barrio,id],function(error){
         if(error)return callback(error);
         callback(null,{changes:this.changes});
     });
