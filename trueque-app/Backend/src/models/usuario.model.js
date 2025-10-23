@@ -27,9 +27,9 @@ function createUsuario(data, callback){
     bcrypt.hash(password,10,(err,hash) =>{
         if(err) return callback(err);
         const sql = `INSERT INTO Usuario(nombre, apellido,email,password, id_barrio) VALUES (?,?,?,?,?)`;
-        db.run(sql,[nombre,apellido,email,password,id_barrio], function(error){
+        db.run(sql,[nombre,apellido,email,hash  ,id_barrio], function(error){
             if(error) return callback(error);
-            callback(null, {id: this.lastID, ...data, password:undefined});
+            callback(null, {id: this.lastID,nombre, apellido, email, id_barrio});
         });
     });
 }

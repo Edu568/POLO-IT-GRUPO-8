@@ -24,7 +24,7 @@ export async function loginUser(credentials) {
     body: JSON.stringify(credentials),
   });
   if (!res.ok) {
-    const err = await res.text();
+    const err = await res.json();
     throw new Error(err || res.statusText);
   }
   return res.json(); 
