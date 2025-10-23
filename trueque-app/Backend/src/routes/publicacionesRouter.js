@@ -11,7 +11,7 @@ const {
 } = require('../controllers/publicacionesController');
 
 router.get('/', getPublicaciones);
-// router.get('/:id', getPublicacion);
+router.get('/publicacion/:id', getPublicacion);
 router.post('/', createPublicacion);
 router.put('/:id', updatePublicacion);
 router.delete('/:id', deletePublicacion);
