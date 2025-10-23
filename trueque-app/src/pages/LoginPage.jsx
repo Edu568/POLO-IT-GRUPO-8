@@ -71,7 +71,7 @@ return (
                 )}
                 <button type="submit" className="btn btn-primary w-100">Ingresar</button>
                 <hr /> 
-                <button type="submit" className="btn btn-primary w-100">Registrarse</button>
+                <button type="submit" className="btn btn-primary w-100" onClick={() => navigate('/register')}>Registrarse</button>
             </form>
         </div>
     </div>
