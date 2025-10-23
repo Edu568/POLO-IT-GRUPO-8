@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { NotFound } from './pages/NotFound';
 import { DetalleProducto } from './pages/detalleProducto';
 import { useState } from 'react';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,7 @@ function App() {
           isLoggedIn ? <HomePage searchItems={searchItems}  /> : <Navigate to="/login" />
         } />
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/detalle" element={<DetalleProducto />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
