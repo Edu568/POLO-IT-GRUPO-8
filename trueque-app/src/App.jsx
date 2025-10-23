@@ -8,12 +8,14 @@ import { useState } from 'react';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchItems, setSearchItems] = useState("");
+
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={
-          isLoggedIn ? <HomePage /> : <Navigate to="/login" />
+          isLoggedIn ? <HomePage searchItems={searchItems}  /> : <Navigate to="/login" />
         } />
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/detalle" element={<DetalleProducto />} />
