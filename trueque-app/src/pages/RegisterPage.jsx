@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { registerUser } from "../features/users/UserProfile";
+import { registerUser } from "../API/userApi";
 
 
 
