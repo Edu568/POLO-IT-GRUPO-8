@@ -26,7 +26,7 @@ const LoginPage = ({ setIsLoggedIn }) => {
       setIsLoggedIn(true);
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Error al conectar con la API');
+      setError('Datos incorrectos');
     } finally {
       setLoading(false);
     }

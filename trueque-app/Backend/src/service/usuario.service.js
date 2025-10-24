@@ -61,38 +61,46 @@ async function crearUsuario(data){
 }
 
 //idem con las validaciones de crearUsaurio
-async function actualizarUsuario(id,data){
-    const {nombre, apellido,email, id_barrio} = data;
-    //valido si se ingreso un nuevo barrio
-    if(id_barrio){
-        //valido si el barrio existe
-        const barrio  = await listarBarrioById(id_barrio);
-        if(!barrio) return new Promise.reject(new Error('Barrio no existe'));
-    }
+async function actualizarUsuario(id, data) {
+  // Verifico que el usuario exista
+  const usuarioActual = await listarUsuarioById(id);
+  if (!usuarioActual) return Promise.reject(new Error('Usuario no encontrado'));
 
-    //valido que se hayan ingresado datos en los campos requeridos
-    if(!nombre || !email || !apellido){
-        return new Promise.reject(new Error('Nombre y email requerido'));
-    }
+  const { nombre, apellido, email, id_barrio } = data;
 
-    //Valido si el email sea unico al momento de cambiarlo
-    const emailUnico = await new Promise((resolve, reject) =>{
-        checkEmailExisteExcluyendoId(email, id, (error,result) =>{
-            if(error) reject(error);
-            else resolve(result);
-        });
+  // Preparo el nuevo objeto, pero solo con valores definidos
+  const nuevosDatos = {};
+  if (nombre !== undefined) nuevosDatos.nombre = nombre;
+  if (apellido !== undefined) nuevosDatos.apellido = apellido;
+  if (email !== undefined) nuevosDatos.email = email;
+  if (id_barrio !== undefined) nuevosDatos.id_barrio = id_barrio;
+
+  // Validar email duplicado si se actualiza
+  if (email && email !== usuarioActual.email) {
+    const emailUnico = await new Promise((resolve, reject) => {
+      checkEmailExisteExcluyendoId(email, id, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
     });
+    if (emailUnico) return Promise.reject(new Error('El email ya se encuentra registrado'));
+  }
 
-    if(emailUnico) return new Promise.reject(new Error('El email ya se encuentrado registrado'));
+  // Si cambia el barrio, validar que exista
+  if (id_barrio) {
+    const barrio = await listarBarrioById(id_barrio);
+    if (!barrio) return Promise.reject(new Error('Barrio no existe'));
+  }
 
-    return new Promise((resolve,reject) =>{
-        updateUsuario(id, data, (error, result) =>{
-            if(error) reject(error);
-            else resolve(result);
-        })
-    })
-
+  // Actualizo en base de datos
+  return new Promise((resolve, reject) => {
+    updateUsuario(id, nuevosDatos, (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    });
+  });
 }
+
 async function iniciarSesion(email,password){
     return new Promise((resolve, reject) =>{
         loginUsuario(email,password,(error, result) =>{

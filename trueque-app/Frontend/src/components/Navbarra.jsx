@@ -55,9 +55,10 @@ export const Navbarra = ({ onSearch = () => {} }) => {
             <Nav.Link as={Link} to="/">
               Inicio
             </Nav.Link>
-            <Nav.Link onClick={handleCuentaClick}>
-              {usuario ? "Cuenta" : "Iniciar sesión"}
+            <Nav.Link as={Link} to="/perfil">
+              Cuenta
             </Nav.Link>
+
           </Nav>
 
           <Form className="d-flex" role="search" onSubmit={(e) => e.preventDefault()}>
@@ -79,14 +80,6 @@ export const Navbarra = ({ onSearch = () => {} }) => {
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
                 Bienvenido, <strong>{usuario.nombre}</strong>{" "}
-                <Button
-                  variant="outline-light"
-                  size="sm"
-                  className="ms-2"
-                  onClick={handleLogout}
-                >
-                  Cerrar sesión
-                </Button>
               </Navbar.Text>
             </Navbar.Collapse>
           )}

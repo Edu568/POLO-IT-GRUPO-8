@@ -25,6 +25,8 @@ function App() {
         <Route path="/detalle/:id" element={<DetalleProducto />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/perfil/:id" element={<PerfilUsuario />} />
+        <Route path="/perfil" element={<PerfilUsuario />} />
+
 
         {/* <Route
           path="/perfil"

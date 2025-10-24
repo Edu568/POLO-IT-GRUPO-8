@@ -34,16 +34,46 @@ function createUsuario(data, callback){
     });
 }
 
-function updateUsuario(id, data, callback){
-    const {nombre,apellido,email, id_barrio} = data;
-    const sql = `
-        UPDATE Usuario SET nombre = ?, apelldio = ?,email = ?, id_barrio = ?
-        WHERE (id = ?)
-    `;
-    db.run(sql,[nombre,apellido,email,id_barrio,id],function(error){
-        if(error)return callback(error);
-        callback(null,{changes:this.changes});
-    });
+function updateUsuario(id, data, callback) {
+  // Filtramos solo campos que tengan valor (no null/undefined)
+  const campos = [];
+  const valores = [];
+
+  if (data.nombre !== undefined) {
+    campos.push("nombre = ?");
+    valores.push(data.nombre);
+  }
+  if (data.apellido !== undefined) {
+    campos.push("apellido = ?");
+    valores.push(data.apellido);
+  }
+  if (data.email !== undefined) {
+    campos.push("email = ?");
+    valores.push(data.email);
+  }
+  if (data.id_barrio !== undefined) {
+    campos.push("id_barrio = ?");
+    valores.push(data.id_barrio);
+  }
+
+
+  if (campos.length === 0) {
+    return callback(new Error("No se enviaron campos para actualizar"));
+  }
+
+
+  const sql = `
+    UPDATE Usuario
+    SET ${campos.join(", ")}
+    WHERE id = ?
+  `;
+
+  valores.push(id);
+
+  db.run(sql, valores, function (error) {
+    if (error) return callback(error);
+    callback(null, { changes: this.changes });
+  });
 }
 
 function deleteUsuario(id, callback){

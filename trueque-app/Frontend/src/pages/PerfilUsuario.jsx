@@ -1,23 +1,29 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getBarrios, getUsers } from "../API/userApi";
+import { useNavigate } from "react-router-dom";
+import { getBarrios } from "../API/userApi";
 import { Navbarra } from "../components/Navbarra";
 import { Footer } from "../components/Footer";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 
 export const PerfilUsuario = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
   const [barrios, setBarrios] = useState([]);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  // Cargar datos del usuario
+  // Obtener usuario logueado desde localStorage
+  const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
+
   useEffect(() => {
+    if (!usuarioLocal) {
+      navigate("/login");
+      return;
+    }
+
     const fetchUsuario = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/usuario/${id}`);
+        const res = await fetch(`http://localhost:3000/api/usuario/${usuarioLocal.id}`);
         if (!res.ok) throw new Error("Error al obtener usuario");
         const data = await res.json();
         setUsuario(data);
@@ -37,9 +43,9 @@ export const PerfilUsuario = () => {
 
     fetchUsuario();
     fetchBarrios();
-  }, [id]);
+  }, [navigate]);
 
-  // Manejador de cambios en los inputs
+  // Manejador de cambios
   const handleChange = (e) => {
     setUsuario({
       ...usuario,
@@ -47,26 +53,42 @@ export const PerfilUsuario = () => {
     });
   };
 
-  // Guardar cambios
+  // Guardar cambios parciales
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setMensaje("");
 
     try {
-      const res = await fetch(`http://localhost:3000/api/usuario/${id}`, {
+      // Solo envío los campos modificados
+      const camposActualizados = {};
+      for (const key in usuario) {
+        if (usuario[key] !== null && usuario[key] !== undefined && usuario[key] !== "")
+          camposActualizados[key] = usuario[key];
+      }
+
+      const res = await fetch(`http://localhost:3000/api/usuario/${usuarioLocal.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(usuario),
+        body: JSON.stringify(camposActualizados),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al actualizar usuario");
 
-      setMensaje("✅ Usuario actualizado correctamente.");
+      setMensaje(" Datos actualizados correctamente.");
+      // Actualizar usuario en localStorage
+      localStorage.setItem("usuario", JSON.stringify(usuario));
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  // Cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    navigate("/login");
   };
 
   if (!usuario) return <div className="text-center mt-5">Cargando usuario...</div>;
@@ -88,7 +110,7 @@ export const PerfilUsuario = () => {
               name="nombre"
               value={usuario.nombre || ""}
               onChange={handleChange}
-              required
+              placeholder="Tu nombre"
             />
           </Form.Group>
 
@@ -99,7 +121,7 @@ export const PerfilUsuario = () => {
               name="apellido"
               value={usuario.apellido || ""}
               onChange={handleChange}
-              required
+              placeholder="Tu apellido"
             />
           </Form.Group>
 
@@ -110,7 +132,7 @@ export const PerfilUsuario = () => {
               name="email"
               value={usuario.email || ""}
               onChange={handleChange}
-              required
+              placeholder="Tu email"
             />
           </Form.Group>
 
@@ -120,7 +142,6 @@ export const PerfilUsuario = () => {
               name="id_barrio"
               value={usuario.id_barrio || ""}
               onChange={handleChange}
-              required
             >
               <option value="">Seleccione un barrio</option>
               {barrios.map((b) => (
@@ -135,8 +156,8 @@ export const PerfilUsuario = () => {
             <Button type="submit" variant="primary">
               Guardar cambios
             </Button>
-            <Button variant="secondary" onClick={() => navigate("/")}>
-              Cancelar
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Cerrar sesión
             </Button>
           </div>
         </Form>
