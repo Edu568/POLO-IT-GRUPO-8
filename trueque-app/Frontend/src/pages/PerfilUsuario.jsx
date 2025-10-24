@@ -1,9 +1,9 @@
+import { Navbarra } from "../components/Navbarra";
+import { Footer } from "../components/Footer";
+import { Container, Form, Button, Alert, Card } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getBarrios } from "../API/userApi";
-import { Navbarra } from "../components/Navbarra";
-import { Footer } from "../components/Footer";
-import { Container, Form, Button, Alert } from "react-bootstrap";
 
 export const PerfilUsuario = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export const PerfilUsuario = () => {
     setMensaje("");
 
     try {
-      // Solo envío los campos modificados
+      // Solo envío los campos con cambios (manteniendo los valores anteriores)
       const camposActualizados = {};
       for (const key in usuario) {
         if (usuario[key] !== null && usuario[key] !== undefined && usuario[key] !== "")
@@ -76,9 +76,9 @@ export const PerfilUsuario = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al actualizar usuario");
 
-      setMensaje(" Datos actualizados correctamente.");
+      setMensaje("✅ Datos actualizados correctamente.");
       // Actualizar usuario en localStorage
-      localStorage.setItem("usuario", JSON.stringify(usuario));
+      localStorage.setItem("usuario", JSON.stringify({ ...usuarioLocal, ...camposActualizados }));
     } catch (err) {
       setError(err.message);
     }
@@ -96,72 +96,97 @@ export const PerfilUsuario = () => {
   return (
     <>
       <Navbarra />
-      <Container className="my-5" style={{ maxWidth: "600px" }}>
-        <h2 className="text-center mb-4">Perfil de Usuario</h2>
 
-        {error && <Alert variant="danger">{error}</Alert>}
-        {mensaje && <Alert variant="success">{mensaje}</Alert>}
-
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              name="nombre"
-              value={usuario.nombre || ""}
-              onChange={handleChange}
-              placeholder="Tu nombre"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Apellido</Form.Label>
-            <Form.Control
-              type="text"
-              name="apellido"
-              value={usuario.apellido || ""}
-              onChange={handleChange}
-              placeholder="Tu apellido"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={usuario.email || ""}
-              onChange={handleChange}
-              placeholder="Tu email"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-4">
-            <Form.Label>Barrio</Form.Label>
-            <Form.Select
-              name="id_barrio"
-              value={usuario.id_barrio || ""}
-              onChange={handleChange}
+      <Container
+        className="d-flex justify-content-center align-items-center my-5"
+        style={{ minHeight: "70vh" }}
+      >
+        <Card
+          className="shadow-lg p-4"
+          style={{
+            width: "100%",
+            maxWidth: "500px",
+            borderRadius: "15px",
+            backgroundColor: "#f8f9fa",
+          }}
+        >
+          {/* Avatar y título */}
+          <div className="text-center mb-4">
+            <div
+              className="rounded-circle bg-primary text-white mx-auto d-flex align-items-center justify-content-center"
+              style={{ width: "90px", height: "90px", fontSize: "2rem" }}
             >
-              <option value="">Seleccione un barrio</option>
-              {barrios.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-
-          <div className="d-flex justify-content-between">
-            <Button type="submit" variant="primary">
-              Guardar cambios
-            </Button>
-            <Button variant="outline-danger" onClick={handleLogout}>
-              Cerrar sesión
-            </Button>
+              {usuario.nombre?.[0]?.toUpperCase() || "U"}
+            </div>
+            <h3 className="mt-3 fw-bold">Perfil de Usuario</h3>
+            <p className="text-muted mb-0">{usuario.email}</p>
           </div>
-        </Form>
+
+          {error && <Alert variant="danger">{error}</Alert>}
+          {mensaje && <Alert variant="success">{mensaje}</Alert>}
+
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-semibold">Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nombre"
+                value={usuario.nombre || ""}
+                onChange={handleChange}
+                placeholder="Tu nombre"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-semibold">Apellido</Form.Label>
+              <Form.Control
+                type="text"
+                name="apellido"
+                value={usuario.apellido || ""}
+                onChange={handleChange}
+                placeholder="Tu apellido"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-semibold">Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={usuario.email || ""}
+                onChange={handleChange}
+                placeholder="Tu email"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-semibold">Barrio</Form.Label>
+              <Form.Select
+                name="id_barrio"
+                value={usuario.id_barrio || ""}
+                onChange={handleChange}
+              >
+                <option value="">Seleccione un barrio</option>
+                {barrios.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.nombre}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <div className="d-flex justify-content-between gap-2">
+              <Button type="submit" variant="success" className="w-50">
+                💾 Guardar cambios
+              </Button>
+              <Button variant="outline-danger" className="w-50" onClick={handleLogout}>
+                🚪 Cerrar sesión
+              </Button>
+            </div>
+          </Form>
+        </Card>
       </Container>
+
       <Footer />
     </>
   );
