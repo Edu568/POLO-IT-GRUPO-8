@@ -2,10 +2,18 @@
 import { Container, Nav, Navbar, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./nav.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Navbarra = ({ onSearch = () => {} }) => {
   const [search, setSearch] = useState("");
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    const usuarioGuardado = localStorage.getItem("usuario");
+    if (usuarioGuardado) {
+      setUsuario(JSON.parse(usuarioGuardado));
+    }
+  }, []);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -60,7 +68,7 @@ export const Navbarra = ({ onSearch = () => {} }) => {
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
-              Bienvenido, <a href="#login">Prueba</a>
+              Bienvenido, <a> {usuario ? usuario.nombre : 'Cuenta'}</a>
             </Navbar.Text>
           </Navbar.Collapse>
         </Container>
