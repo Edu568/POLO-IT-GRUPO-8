@@ -1,6 +1,6 @@
 import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "./ProductoCard.css"; // 👈 nuevo archivo CSS para los estilos visuales
+import "./ProductoCard.css";
 
 export const ProductoCard = ({ id, nombre, descripcion, imagen }) => {
   return (

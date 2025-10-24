@@ -1,7 +1,7 @@
 import { ProductoCard } from "./ProductoCard";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import "./GaleriaProductos.css"; // 👈 nuevo archivo CSS para animaciones y estilos extra
+import "./GaleriaProductos.css"; 
 
 export const GaleriaProductos = () => {
   const [productos, setProductos] = useState([]);
