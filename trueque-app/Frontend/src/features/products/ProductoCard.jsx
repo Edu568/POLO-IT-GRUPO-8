@@ -1,39 +1,37 @@
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "./ProductoCard.css";
 
-export const ProductoCard = ({ id, nombre, descripcion, imagen }) => {
+export const ProductoCard = ({ id, nombre, descripcion, imagen, categoria, disponible }) => {
   return (
-    <Card className="producto-card shadow-sm h-100 border-0">
-      {/* Imagen */}
-      <div className="producto-imagen-container">
+    <Card className="h-100 shadow-sm card-custom border-0 rounded-4 overflow-hidden hover-card">
+      <div className="image-container">
         <Card.Img
           variant="top"
           src={imagen || "/file-not-found.jpg"}
           alt={nombre}
-          className="producto-imagen"
+          className="card-img-top"
+          style={{ height: "220px", objectFit: "cover" }}
         />
       </div>
 
-      {/* Contenido */}
       <Card.Body className="d-flex flex-column justify-content-between">
         <div>
-          <Card.Title className="producto-titulo text-capitalize">{nombre}</Card.Title>
-          <Card.Text className="producto-descripcion text-muted">
-            {descripcion?.length > 70
-              ? descripcion.slice(0, 70) + "..."
-              : descripcion || "Sin descripción disponible"}
-          </Card.Text>
+          <Card.Title className="text-capitalize text-truncate fw-semibold">{nombre}</Card.Title>
+          <Card.Text className="text-muted small text-truncate mb-2">{descripcion}</Card.Text>
+
+          {/* Categoría y disponibilidad */}
+          <div className="d-flex justify-content-between align-items-center">
+            <Badge bg="info" text="dark">
+              {categoria || "Sin categoría"}
+            </Badge>
+            <Badge bg={disponible ? "success" : "secondary"}>
+              {disponible ? "Disponible" : "No disponible"}
+            </Badge>
+          </div>
         </div>
 
-        <Button
-          as={Link}
-          to={`/detalle/${id}`}
-          variant="success"
-          size="sm"
-          className="mt-2 w-100 fw-semibold"
-        >
-          Ver detalles
+        <Button as={Link} to={`/detalle/${id}`} variant="success" size="sm" className="mt-3">
+          Ver más
         </Button>
       </Card.Body>
     </Card>
