@@ -58,7 +58,7 @@ function getAllPublicacionesByUsuario(id, callback){
     FROM Publicacion p
     JOIN Categoria c ON(p.id_categoria = c.id)
     JOIN Usuario u ON(p.id_dueno = u.id)
-    WHERE (u.id = id)
+    WHERE (u.id = ?)
   `;
   db.all(sql,[id],callback);
 }

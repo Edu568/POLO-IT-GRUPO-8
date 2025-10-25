@@ -62,7 +62,7 @@ export default function CargaProductoPage() {
       formData.append("foto", imagenFile); // backend debe esperar 'foto' o ajustar nombre
       // si tu API necesita el id de usuario, obténlo del localStorage
       const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-      if (usuario?.id) formData.append("usuarioId", usuario.id);
+      if (usuario?.id) formData.append("id_dueno", usuario.id);
 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/publicaciones/", {
