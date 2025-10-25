@@ -20,9 +20,9 @@ const LoginPage = ({ setIsLoggedIn }) => {
       const body = await loginUser({ email, password }); 
 
       
-      if (body.token) localStorage.setItem('token', body.token);
-      if (body.usuario) localStorage.setItem('usuario', JSON.stringify(body.usuario));
-
+      if (body.usuario) {
+        localStorage.setItem('usuario', JSON.stringify(body.usuario));
+      }
       setIsLoggedIn(true);
       navigate('/');
     } catch (err) {

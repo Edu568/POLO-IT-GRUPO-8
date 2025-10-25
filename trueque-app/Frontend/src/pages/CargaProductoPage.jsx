@@ -1,55 +1,53 @@
-// ...existing code...
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Form, Button, Image } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbarra } from "../components/Navbarra";
 import { getCategorias } from "../API/userApi";
 
 export default function CargaProductoPage() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [imagenFile, setImagenFile] = useState(null);
-  const [categorias, setCategoria] = useState([]);
+  const [imagenes, setImagenes] = useState([]); // ✅ múltiples archivos
+  const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-  const [preview, setPreview] = useState(null);
+  const [previews, setPreviews] = useState([]); // ✅ inicializar como array
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() =>{
-    const fetchCategorias = async () =>{
+  // Cargar categorías
+  useEffect(() => {
+    const fetchCategorias = async () => {
       try {
         const data = await getCategorias();
-        setCategoria(data);
-      } catch (error) {
-        setError('Error al cargar las categorias');
+        setCategorias(data);
+      } catch (err) {
+        setError("Error al cargar las categorías");
       }
     };
     fetchCategorias();
-  },[]);
+  }, []);
 
-
+  // Manejador de archivos (múltiples)
   const handleFileChange = (e) => {
-    const file = e.target.files?.[0] || null;
-    setImagenFile(file);
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-    } else {
-      setPreview(null);
-    }
+    const files = Array.from(e.target.files);
+    setImagenes(files);
+    const previewsTemp = files.map((file) => URL.createObjectURL(file));
+    setPreviews(previewsTemp);
   };
 
+  // Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     if (!nombre.trim() || !descripcion.trim() || !categoriaSeleccionada) {
-      setError("Campos requeridos.");
+      setError("Todos los campos son requeridos.");
       return;
     }
-    if (!imagenFile) {
-      setError("Debes seleccionar una imagen del producto.");
+    if (imagenes.length === 0) {
+      setError("Debes seleccionar al menos una imagen (máx. 4).");
       return;
     }
 
@@ -59,10 +57,12 @@ export default function CargaProductoPage() {
       formData.append("titulo", nombre);
       formData.append("descripcion", descripcion);
       formData.append("id_categoria", categoriaSeleccionada);
-      formData.append("foto", imagenFile); // backend debe esperar 'foto' o ajustar nombre
-      // si tu API necesita el id de usuario, obténlo del localStorage
+
       const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
       if (usuario?.id) formData.append("id_dueno", usuario.id);
+
+      // adjuntar todas las imágenes
+      imagenes.forEach((file) => formData.append("fotos", file));
 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/publicaciones/", {
@@ -78,16 +78,8 @@ export default function CargaProductoPage() {
         throw new Error(body.message || body.error || res.statusText || "Error al crear producto");
       }
 
-      // si el backend devuelve el id del nuevo producto, navegar a su detalle
-      const nuevoProducto = body.producto || body || {
-        id: body.id || body.insertId,
-        titulo: nombre,
-        descripcion,
-        fotos: body.fotos || [preview] // fallback
-      };
       alert("Producto cargado correctamente.");
-      
-      navigate("/", {state: {nuevoProducto}}); // fallback
+      navigate("/");
     } catch (err) {
       setError(err.message || "Error de red al conectar con la API");
     } finally {
@@ -101,20 +93,21 @@ export default function CargaProductoPage() {
       <Container className="my-4">
         <Card className="p-3 mx-auto" style={{ maxWidth: 800 }}>
           <Card.Title className="mb-3">Cargar nuevo producto</Card.Title>
+
           {error && <div className="alert alert-danger">{error}</div>}
+
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="nombre">
+            <Form.Group className="mb-3">
               <Form.Label>Nombre del producto</Form.Label>
               <Form.Control
                 type="text"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 placeholder="Ej: Juego de vasos artesanales"
-                required
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="descripcion">
+            <Form.Group className="mb-3">
               <Form.Label>Descripción</Form.Label>
               <Form.Control
                 as="textarea"
@@ -122,12 +115,10 @@ export default function CargaProductoPage() {
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
                 placeholder="Breve descripción del producto"
-                required
               />
             </Form.Group>
-            
-            {/* Categoría */}
-            <Form.Group className="mb-3" controlId="categoria">
+
+            <Form.Group className="mb-3">
               <Form.Label><strong>Categoría</strong></Form.Label>
               <Form.Select
                 value={categoriaSeleccionada}
@@ -142,12 +133,20 @@ export default function CargaProductoPage() {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="imagen">
-              <Form.Label>Imagen del producto</Form.Label>
-              <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
-              {preview && (
-                <div className="mt-3 text-center">
-                  <Image src={preview} alt="preview" thumbnail style={{ maxHeight: 240 }} />
+            <Form.Group className="mb-3">
+              <Form.Label>Imágenes del producto (máx. 4)</Form.Label>
+              <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
+              {previews.length > 0 && (
+                <div className="mt-3 text-center d-flex flex-wrap justify-content-center gap-2">
+                  {previews.map((p, idx) => (
+                    <Image
+                      key={idx}
+                      src={p}
+                      alt={`preview-${idx}`}
+                      thumbnail
+                      style={{ maxHeight: 180, width: "auto" }}
+                    />
+                  ))}
                 </div>
               )}
             </Form.Group>
@@ -166,4 +165,3 @@ export default function CargaProductoPage() {
     </>
   );
 }
-// ...existing code...

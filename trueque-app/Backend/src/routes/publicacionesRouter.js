@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const upload = require('../middlewares/upload');
 const {
   getPublicaciones,
   getPublicacion,
@@ -12,9 +12,12 @@ const {
 
 router.get('/', getPublicaciones);
 router.get('/publicacion/:id', getPublicacion);
-router.post('/', createPublicacion);
+
+// 📸 Múltiples fotos
+router.post('/', upload.array('fotos', 4), createPublicacion);
+
 router.put('/:id', updatePublicacion);
 router.delete('/:id', deletePublicacion);
-router.get('/:id',getPublicacionByUsuario);
+router.get('/:id', getPublicacionByUsuario);
 
 module.exports = router;

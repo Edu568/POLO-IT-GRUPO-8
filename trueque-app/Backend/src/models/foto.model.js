@@ -36,17 +36,19 @@ function createFoto(data, callback){
 
 }
 //funcion para actualizar una foto
-function updateFoto(id,data,callback){
-    const {id_publicacion,url} = data;
-    const sql = `
-        UPDATE Foto SET(id_publicacion = ?, url = ?)
-        WHERE (id = ?)
-    `;
-    db.run(sql,[id_publicacion,url,id],function(error){
-        if(error)return callback(error);
-        callback(null, {changes: this.changes});
-    })
+function updateFoto(id, data, callback) {
+  const { id_publicacion, url } = data;
+  const sql = `
+    UPDATE Foto 
+    SET id_publicacion = ?, url = ?
+    WHERE id = ?
+  `;
+  db.run(sql, [id_publicacion, url, id], function (error) {
+    if (error) return callback(error);
+    callback(null, { changes: this.changes });
+  });
 }
+
 
 //funcion para eliminar una foto
 function deleteFoto(id,callback){

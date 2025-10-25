@@ -71,7 +71,8 @@ function createPublicacion(data, callback) {
     VALUES (?, ?, ?, ?)
   `;
   db.run(sql, [titulo, descripcion, id_categoria, id_dueno], function (err) {
-    callback(err, { id: this?.lastID, ...data });
+    if (err) return callback(err);
+    callback(null, { id: this.lastID, ...data });
   });
 }
 

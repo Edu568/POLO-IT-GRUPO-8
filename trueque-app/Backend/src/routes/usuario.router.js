@@ -9,9 +9,9 @@ const {
 } = require('../controllers/usuario.controller');
 
 router.get('/',getUsuario);
+router.post('/login',loginUsuario);
 router.get('/:id',getUsuarioById);
 router.post('/',createUsuario);
 router.put('/:id',updateUsuario);
-router.post('/login',loginUsuario);
 
 module.exports = router;

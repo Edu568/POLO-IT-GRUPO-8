@@ -1,6 +1,7 @@
 const publicacionesModel = require('../models/publicaciones.model');
 const { listarPublicaciones, obtenerPublicacionById, listarPublicacionesPorUsuario } = require('../service/publicaciones.service');
 const { eliminarPublicacion } = require('../service/publicaciones.service');
+const fotoModel = require('../models/foto.model');
 
 
 async function deletePublicacion(req, res) {
@@ -46,13 +47,55 @@ async function getPublicacionByUsuario(req, res){
   }
 }
 
-function createPublicacion(req, res) {
-  publicacionesModel.createPublicacion(req.body, (err, pub) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.status(201).json(pub);
-  });
-}
+async function createPublicacion(req, res) {
+  try {
+    // Datos del cuerpo
+    const { titulo, descripcion, id_categoria, id_dueno } = req.body;
 
+    if (!titulo || !descripcion || !id_categoria || !id_dueno) {
+      return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    // Crear la publicación primero
+    await new Promise((resolve, reject) => {
+      publicacionesModel.createPublicacion(
+        { titulo, descripcion, id_categoria, id_dueno },
+        (err, pub) => {
+          if (err) return reject(err);
+          resolve(pub);
+        }
+      );
+    }).then(async (pub) => {
+      const publicacionId = pub.id;
+
+      // Procesar imágenes si hay archivos
+      if (req.files && req.files.length > 0) {
+        const fotosGuardadas = [];
+
+        for (const file of req.files) {
+          const url = `/uploads/${file.filename}`;
+          await new Promise((resolve, reject) => {
+            fotoModel.createFoto({ id_publicacion: publicacionId, url }, (err, result) => {
+              if (err) return reject(err);
+              fotosGuardadas.push(result);
+              resolve();
+            });
+          });
+        }
+
+        pub.fotos = fotosGuardadas.map(f => f.url);
+      }
+
+      res.status(201).json({
+        message: "Publicación creada correctamente",
+        publicacion: pub
+      });
+    });
+    } catch (error) {
+    console.error("Error al crear la publicación:", error);
+    res.status(500).json({ error: error.message || "Error interno del servidor" });
+  }
+}
 
 function updatePublicacion(req, res) {
   const { id } = req.params;
