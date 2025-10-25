@@ -4,6 +4,14 @@ export async function getBarrios(){
   return res.json();
 }
 
+export async function getCategorias(){
+  const res = await fetch('http://localhost:3000/api/categoria/');
+  if(!res.ok) throw new Error('Error al obtener categorias');
+  return res.json();
+
+  //paa categorias
+}
+
 export async function registerUser(data) {
   const res = await fetch("http://localhost:3000/api/usuario/", {
     method: "POST",
