@@ -1,18 +1,34 @@
 // ...existing code...
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Form, Button, Image } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbarra } from "../components/Navbarra";
+import { getCategorias } from "../API/userApi";
 
 export default function CargaProductoPage() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [imagenFile, setImagenFile] = useState(null);
+  const [categorias, setCategoria] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() =>{
+    const fetchCategorias = async () =>{
+      try {
+        const data = await getCategorias();
+        setCategoria(data);
+      } catch (error) {
+        setError('Error al cargar las categorias');
+      }
+    };
+    fetchCategorias();
+  },[]);
+
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] || null;
@@ -28,8 +44,8 @@ export default function CargaProductoPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!nombre.trim() || !descripcion.trim()) {
-      setError("Nombre y descripción son requeridos.");
+    if (!nombre.trim() || !descripcion.trim() || !categoriaSeleccionada) {
+      setError("Campos requeridos.");
       return;
     }
     if (!imagenFile) {
@@ -42,6 +58,7 @@ export default function CargaProductoPage() {
       const formData = new FormData();
       formData.append("titulo", nombre);
       formData.append("descripcion", descripcion);
+      formData.append("id_categoria", categoriaSeleccionada);
       formData.append("foto", imagenFile); // backend debe esperar 'foto' o ajustar nombre
       // si tu API necesita el id de usuario, obténlo del localStorage
       const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
@@ -107,6 +124,22 @@ export default function CargaProductoPage() {
                 placeholder="Breve descripción del producto"
                 required
               />
+            </Form.Group>
+            
+            {/* Categoría */}
+            <Form.Group className="mb-3" controlId="categoria">
+              <Form.Label><strong>Categoría</strong></Form.Label>
+              <Form.Select
+                value={categoriaSeleccionada}
+                onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+              >
+                <option value="">Selecciona una categoría</option>
+                {categorias.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nombre}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="imagen">
