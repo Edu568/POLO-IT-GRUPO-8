@@ -6,8 +6,9 @@ import { NotFound } from './pages/NotFound';
 import { DetalleProducto } from './pages/detalleProducto';
 import { useState } from 'react';
 import RegisterPage from './pages/RegisterPage';
-import { ProfilePage } from "./features/users/ProfilePage";
+import { ConfirmationPage } from './pages/ConfirmationPage';
 import { PerfilUsuario } from './pages/PerfilUsuario';
+import CargaProductoPage from './pages/CargaProductoPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,7 +23,9 @@ function App() {
         } />
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/cargar-producto" element={<CargaProductoPage />} />
         <Route path="/detalle/:id" element={<DetalleProducto />} />
+        <Route path="/confirmation/:id" element={<ConfirmationPage />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/perfil/:id" element={<PerfilUsuario />} />
         <Route path="/perfil" element={<PerfilUsuario />} />

@@ -1,7 +1,7 @@
 import { Container, Nav, Navbar, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "./nav.css";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const Navbarra = ({ onSearch = () => {} }) => {
   const [search, setSearch] = useState("");
@@ -57,6 +57,9 @@ export const Navbarra = ({ onSearch = () => {} }) => {
             </Nav.Link>
             <Nav.Link as={Link} to="/perfil">
               Cuenta
+            </Nav.Link>
+            <Nav.Link as={Link} to="/cargar-producto">
+              Cargar Producto
             </Nav.Link>
 
           </Nav>

@@ -1,11 +1,13 @@
+// ...existing code...
 import { Navbarra } from '../components/Navbarra';
 import { Footer } from '../components/Footer';
 import { Container, Row, Col, Button, Carousel, Card } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 export const DetalleProducto = () => {
   const { id } = useParams();  // Obtiene el ID de la ruta
+  const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [productosRelacionados, setProductosRelacionados] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,42 +18,52 @@ export const DetalleProducto = () => {
   const [enCarrito, setEnCarrito] = useState(false);
 
   useEffect(() => {
-    const fetchProducto = async () => {
+    let mounted = true;
+    const fetchAll = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch(`http://localhost:3000/api/publicaciones/publicacion/${id}`);
-        if (!response.ok) throw new Error('Producto no encontrado');
-        const data = await response.json();
-        setProducto({
-          id: data.id,
-          nombre: data.titulo,  // Mapea titulo a nombre
-          descripcion: data.descripcion,
-          imagenes: data.fotos && data.fotos.length > 0 ? data.fotos.map(foto => `http://localhost:3000${foto}`) : ["./file-not-found.jpg"],
-          productoDeseado: "Botella artesanal de vino tinto"
-        });
+        // Producto por id
+        const resProd = await fetch(`http://localhost:3000/api/publicaciones/publicacion/${id}`);
+        if (!resProd.ok) throw new Error('Producto no encontrado');
+        const data = await resProd.json();
+
+        const imagenes = data.fotos && data.fotos.length > 0
+          ? data.fotos.map(foto => (foto.startsWith('http') ? foto : `http://localhost:3000${foto}`))
+          : ["./file-not-found.jpg"];
+
+        if (mounted) {
+          setProducto({
+            id: data.id,
+            nombre: data.titulo || data.nombre,
+            descripcion: data.descripcion || '',
+            imagenes,
+            productoDeseado: data.productoDeseado || "Botella artesanal de vino tinto"
+          });
+        }
+
+        // Productos relacionados
+        const resRel = await fetch('http://localhost:3000/api/publicaciones');
+        if (!resRel.ok) throw new Error('Error al cargar relacionados');
+        const all = await resRel.json();
+        const relacionados = all.filter(prod => prod.id !== Number(id)).slice(0, 6);
+        if (mounted) {
+          setProductosRelacionados(relacionados.map(prod => ({
+            id: prod.id,
+            nombre: prod.titulo,
+            imagen: prod.fotos && prod.fotos.length > 0 ? (prod.fotos[0].startsWith('http') ? prod.fotos[0] : `http://localhost:3000${prod.fotos[0]}`) : "./file-not-found.jpg"
+          })));
+        }
       } catch (err) {
-        setError(err.message);
+        console.error(err);
+        if (mounted) setError(err.message);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
 
-    const fetchRelacionados = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/publicaciones');
-        if (!response.ok) throw new Error('Error al cargar relacionados');
-        const data = await response.json();
-        const relacionados = data.filter(prod => prod.id !== parseInt(id)).slice(0, 6);  // Filtra y limita a 6
-        setProductosRelacionados(relacionados.map(prod => ({
-          id: prod.id,
-          nombre: prod.titulo,
-          imagen: prod.fotos && prod.fotos.length > 0 ? `http://localhost:3000${prod.fotos[0]}` : "./file-not-found.jpg"
-        })));
-      } catch (err) {
-        console.error('Error en relacionados:', err);
-      }
-    };
-
-    fetchProducto();
-    fetchRelacionados();
-    setLoading(false);
+    fetchAll();
+    return () => { mounted = false; };
   }, [id]);
 
   // Verifica si el producto ya está en el carrito al cargar
@@ -64,6 +76,7 @@ export const DetalleProducto = () => {
 
   // Lógica para agregar al carrito
   const handleAgregarCarrito = () => {
+    if (!producto) return;
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     if (!carrito.some(item => item.id === producto.id)) {
       carrito.push({
@@ -80,6 +93,7 @@ export const DetalleProducto = () => {
 
   // Lógica para eliminar del carrito
   const handleEliminarCarrito = () => {
+    if (!producto) return;
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     carrito = carrito.filter(item => item.id !== producto.id);
     localStorage.setItem('carrito', JSON.stringify(carrito));
@@ -90,7 +104,8 @@ export const DetalleProducto = () => {
 
   const handleTrueque = () => {
     setIntencionTrueque(true);
-    alert("Trueque registrado");
+    // Navegar a la página de intercambio pasando el producto seleccionado en state
+    navigate(`/confirmation/${producto.id}`, { state: { producto } });
   };
 
   const handleVolver = () => {
@@ -139,9 +154,9 @@ export const DetalleProducto = () => {
                     src={img}
                     alt={`Imagen ${idx + 1}`}
                     style={{
-                      height: '400px',  // Alto fijo para uniformidad
-                      objectFit: 'cover',  // Recorta sin deformar, mantiene proporción
-                      width: '100%'  // Asegura ancho completo
+                      height: '400px',
+                      objectFit: 'cover',
+                      width: '100%'
                     }}
                   />
                 </Carousel.Item>
@@ -199,15 +214,15 @@ export const DetalleProducto = () => {
                       src={prod.imagen}
                       alt={prod.nombre}
                       style={{
-                        height: '200px',  // Alto fijo para Cards
-                        objectFit: 'cover'  // Recorta sin deformar
+                        height: '200px',
+                        objectFit: 'cover'
                       }}
                     />
                     <Card.Body>
                       <Card.Title>{prod.nombre}</Card.Title>
-                      <Button variant="outline-primary" size="sm">
-                        Ver producto
-                      </Button>
+                      <Link to={`/detalle/${prod.id}`}>
+                        <Button variant="outline-primary" size="sm">Ver producto</Button>
+                      </Link>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -238,15 +253,15 @@ export const DetalleProducto = () => {
                         src={prod.imagen}
                         alt={prod.nombre}
                         style={{
-                          height: '200px',  // Alto fijo para Cards
-                          objectFit: 'cover'  // Recorta sin deformar
+                          height: '200px',
+                          objectFit: 'cover'
                         }}
                       />
                       <Card.Body>
                         <Card.Title>{prod.nombre}</Card.Title>
-                        <Button variant="outline-primary" size="sm">
-                          Ver producto
-                        </Button>
+                        <Link to={`/detalle/${prod.id}`}>
+                          <Button variant="outline-primary" size="sm">Ver producto</Button>
+                        </Link>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -261,3 +276,4 @@ export const DetalleProducto = () => {
     </>
   );
 };
+// ...existing code...
