@@ -8,10 +8,10 @@ import { getCategorias } from "../API/userApi";
 export default function CargaProductoPage() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [imagenes, setImagenes] = useState([]); // ✅ múltiples archivos
+  const [imagenes, setImagenes] = useState([]); // múltiples archivos
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-  const [previews, setPreviews] = useState([]); // ✅ inicializar como array
+  const [previews, setPreviews] = useState([]); //  inicializar como array
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function CargaProductoPage() {
       try {
         const data = await getCategorias();
         setCategorias(data);
-      } catch (err) {
+      } catch {
         setError("Error al cargar las categorías");
       }
     };

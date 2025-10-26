@@ -149,13 +149,43 @@ export const ConfirmationPage = () => {
     const redirectTimeoutRef = useRef(null);
 
     const handleModalConfirm = async () => {
-        
-        setShowConfirmModal(false);
-        
-        setShowSuccessToast(true);
-        redirectTimeoutRef.current = setTimeout(() => {
-            navigate('/');
-        }, 1500);
+        // Intentar marcar la publicación deseada como no disponible en el backend
+        try {
+            const idDeseado = productoSeleccionado?.id;
+            if (idDeseado) {
+                // Obtener datos actuales de la publicación
+                const resGet = await fetch(`http://localhost:3000/api/publicaciones/publicacion/${idDeseado}`);
+                if (!resGet.ok) throw new Error('No se pudo obtener la publicación para actualizar');
+                const data = await resGet.json();
+
+                const payload = {
+                    titulo: data.titulo || data.nombre || productoSeleccionado.nombre,
+                    descripcion: data.descripcion || productoSeleccionado.descripcion || '',
+                    estado: data.estado || null,
+                    disponible: 0
+                };
+
+                const resPut = await fetch(`http://localhost:3000/api/publicaciones/${idDeseado}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!resPut.ok) {
+                    const txt = await resPut.text().catch(() => '');
+                    console.error('Error actualizando publicación:', resPut.status, txt);
+                }
+            }
+        } catch (err) {
+            console.error('Error marcando publicación no disponible:', err);
+        } finally {
+            setShowConfirmModal(false);
+            // Mostrar toast de éxito y redirigir después de un breve delay
+            setShowSuccessToast(true);
+            redirectTimeoutRef.current = setTimeout(() => {
+                navigate('/');
+            }, 1500);
+        }
     };
 
     const handleModalCancel = () => {
