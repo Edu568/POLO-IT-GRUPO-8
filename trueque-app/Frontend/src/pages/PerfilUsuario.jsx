@@ -12,7 +12,7 @@ export const PerfilUsuario = () => {
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  // Obtener usuario logueado desde localStorage
+  
   const usuarioLocal = JSON.parse(localStorage.getItem("usuario"));
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export const PerfilUsuario = () => {
     fetchBarrios();
   }, [navigate]);
 
-  // Manejador de cambios
+ 
   const handleChange = (e) => {
     setUsuario({
       ...usuario,

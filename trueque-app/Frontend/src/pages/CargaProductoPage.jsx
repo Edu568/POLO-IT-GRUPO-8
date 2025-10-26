@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Card, Form, Button, Image } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbarra } from "../components/Navbarra";
@@ -15,8 +15,11 @@ export default function CargaProductoPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo;
+  const returnState = location.state?.returnState || {};
 
-  // Cargar categorías
+  
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -29,7 +32,7 @@ export default function CargaProductoPage() {
     fetchCategorias();
   }, []);
 
-  // Manejador de archivos (múltiples)
+  
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setImagenes(files);
@@ -79,9 +82,15 @@ export default function CargaProductoPage() {
       }
 
       alert("Producto cargado correctamente.");
+      
+      if (body && body.publicacion && returnTo) {
+        
+        navigate(returnTo, { state: { ...returnState, productoOfrecido: body.publicacion } });
+        return;
+      }
       navigate("/");
-    } catch (err) {
-      setError(err.message || "Error de red al conectar con la API");
+    } catch (error) {
+      setError(error.message || "Error de red al conectar con la API");
     } finally {
       setLoading(false);
     }

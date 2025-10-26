@@ -38,6 +38,8 @@ export const DetalleProducto = () => {
             nombre: data.titulo || data.nombre,
             descripcion: data.descripcion || '',
             imagenes,
+            // el backend expone el nombre del dueño como 'usuario'
+            usuario: data.usuario || data.nombreUsuario || null,
             productoDeseado: data.productoDeseado || "Botella artesanal de vino tinto"
           });
         }
@@ -66,7 +68,7 @@ export const DetalleProducto = () => {
     return () => { mounted = false; };
   }, [id]);
 
-  // Verifica si el producto ya está en el carrito al cargar
+  
   useEffect(() => {
     if (producto) {
       const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -74,7 +76,7 @@ export const DetalleProducto = () => {
     }
   }, [producto]);
 
-  // Lógica para agregar al carrito
+  
   const handleAgregarCarrito = () => {
     if (!producto) return;
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -91,7 +93,6 @@ export const DetalleProducto = () => {
     }
   };
 
-  // Lógica para eliminar del carrito
   const handleEliminarCarrito = () => {
     if (!producto) return;
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -104,7 +105,7 @@ export const DetalleProducto = () => {
 
   const handleTrueque = () => {
     setIntencionTrueque(true);
-    // Navegar a la página de intercambio pasando el producto seleccionado en state
+    
     navigate(`/confirmation/${producto.id}`, { state: { producto } });
   };
 
@@ -167,6 +168,9 @@ export const DetalleProducto = () => {
             <Card>
               <Card.Body>
                 <Card.Title as="h2">{producto.nombre}</Card.Title>
+                {producto.usuario && (
+                  <Card.Subtitle className="mb-2 text-muted">Publicado por: {producto.usuario}</Card.Subtitle>
+                )}
                 <Card.Text>
                   <strong>Descripción:</strong> {producto.descripcion}
                 </Card.Text>
@@ -276,4 +280,3 @@ export const DetalleProducto = () => {
     </>
   );
 };
-// ...existing code...
